@@ -16,6 +16,33 @@ const distDir = path.join(repoRoot, "dist");
 const distLibreOfficeDir = path.join(distDir, "libreoffice");
 
 const assetsDir = path.join(repoRoot, "assets");
+const assetsConfigDir = path.join(assetsDir, "config");
+const assetsConfigPath = path.join(assetsConfigDir, "config.json");
+
+const defaultConfig = {
+  watchRoot: "./data",
+  inbox: "inbox",
+  work: "work",
+  output: "output",
+  archiveOriginals: "archive/originals",
+  archiveWork: "archive/work",
+  archiveWorkFailed: "archive/work_failed",
+  logs: "logs",
+  state: "state",
+  polling: false,
+  pollingIntervalMs: 1000,
+  stableCheckIntervalMs: 500,
+  stableChecks: 6,
+  stableTimeoutMs: 60000,
+  jobTimeoutMs: 300000
+};
+
+async function ensureAssetsConfig(): Promise<void> {
+  await fs.ensureDir(assetsConfigDir);
+  if (!(await fs.pathExists(assetsConfigPath))) {
+    await fs.writeJson(assetsConfigPath, defaultConfig, { spaces: 2 });
+  }
+}
 
 async function downloadFile(url: string, destination: string): Promise<void> {
   await fs.ensureDir(path.dirname(destination));
@@ -79,11 +106,12 @@ async function findLibreOfficeRoot(searchDir: string): Promise<string> {
 }
 
 async function copyStaticAssets(): Promise<void> {
+  await ensureAssetsConfig();
   await fs.ensureDir(distDir);
   await fs.ensureDir(path.join(distDir, "config"));
   await fs.ensureDir(path.join(distDir, "licenses"));
 
-  await fs.copy(path.join(assetsDir, "config", "config.json"), path.join(distDir, "config", "config.json"));
+  await fs.copy(assetsConfigPath, path.join(distDir, "config", "config.json"));
   await fs.copy(path.join(assetsDir, "licenses", "MPL-2.0.txt"), path.join(distDir, "licenses", "MPL-2.0.txt"));
   await fs.copy(path.join(assetsDir, "THIRD_PARTY_NOTICES.txt"), path.join(distDir, "THIRD_PARTY_NOTICES.txt"));
 }
