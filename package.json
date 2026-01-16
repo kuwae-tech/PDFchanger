@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "tsc",
-    "vendor:lo": "ts-node scripts/download_and_extract_libreoffice.ts",
+    "ensure:assets": "ts-node scripts/ensure_assets.ts",
+    "vendor:lo": "npm run ensure:assets && ts-node scripts/download_and_extract_libreoffice.ts",
     "pack:exe": "pkg -t node18-win-x64 build/index.js --output dist/DocFolderPdfWatcher.exe",
     "package:zip": "ts-node scripts/package_zip.ts",
     "ci:win": "npm run vendor:lo && npm run build && npm run pack:exe && npm run package:zip"

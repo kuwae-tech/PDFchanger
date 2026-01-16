@@ -1,4 +1,48 @@
-Mozilla Public License Version 2.0
+import path from "path";
+import fs from "fs-extra";
+
+const repoRoot = process.cwd();
+const assetsDir = path.join(repoRoot, "assets");
+const assetsConfigDir = path.join(assetsDir, "config");
+const assetsLicensesDir = path.join(assetsDir, "licenses");
+
+const configPath = path.join(assetsConfigDir, "config.json");
+const thirdPartyNoticesPath = path.join(assetsDir, "THIRD_PARTY_NOTICES.txt");
+const mplPath = path.join(assetsLicensesDir, "MPL-2.0.txt");
+const noticeLibreOfficePath = path.join(assetsLicensesDir, "NOTICE-LibreOffice.txt");
+
+const defaultConfig = {
+  watchRoot: "./data",
+  inbox: "inbox",
+  work: "work",
+  output: "output",
+  archiveOriginals: "archive/originals",
+  archiveWork: "archive/work",
+  archiveWorkFailed: "archive/work_failed",
+  logs: "logs",
+  state: "state",
+  polling: false,
+  pollingIntervalMs: 1000,
+  stableCheckIntervalMs: 500,
+  stableChecks: 6,
+  stableTimeoutMs: 60000,
+  jobTimeoutMs: 300000
+};
+
+const thirdPartyNotices = `DocFolderPdfWatcher includes LibreOffice (headless) for document conversion.
+LibreOffice is made available by The Document Foundation.
+LibreOffice is licensed under the Mozilla Public License v2.0 (MPL-2.0) and other applicable licenses.
+A copy of the MPL-2.0 license text is included in this distribution (licenses/MPL-2.0.txt).
+“LibreOffice” and “The Document Foundation” are trademarks of their respective owners.
+This product is not affiliated with or endorsed by The Document Foundation.
+`;
+
+const libreOfficeNotice = `This product bundles LibreOffice for document conversion.
+LibreOffice is © The Document Foundation and contributors.
+See THIRD_PARTY_NOTICES.txt and licenses/MPL-2.0.txt for licensing details.
+`;
+
+const mplText = `Mozilla Public License Version 2.0
 ==================================
 
 1. Definitions
@@ -347,3 +391,32 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
 
   This Source Code Form is "Incompatible With Secondary Licenses", as
   defined by the Mozilla Public License, v. 2.0.
+`;
+
+export async function ensureAssets(): Promise<void> {
+  await fs.ensureDir(assetsConfigDir);
+  await fs.ensureDir(assetsLicensesDir);
+
+  if (!(await fs.pathExists(configPath))) {
+    await fs.writeJson(configPath, defaultConfig, { spaces: 2 });
+  }
+
+  if (!(await fs.pathExists(thirdPartyNoticesPath))) {
+    await fs.writeFile(thirdPartyNoticesPath, thirdPartyNotices, "utf8");
+  }
+
+  if (!(await fs.pathExists(mplPath))) {
+    await fs.writeFile(mplPath, mplText, "utf8");
+  }
+
+  if (!(await fs.pathExists(noticeLibreOfficePath))) {
+    await fs.writeFile(noticeLibreOfficePath, libreOfficeNotice, "utf8");
+  }
+}
+
+if (require.main === module) {
+  ensureAssets().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}
