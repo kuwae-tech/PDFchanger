@@ -1,0 +1,6 @@
+DocFolderPdfWatcher includes LibreOffice (headless) for document conversion.
+LibreOffice is made available by The Document Foundation.
+LibreOffice is licensed under the Mozilla Public License v2.0 (MPL-2.0) and other applicable licenses.
+A copy of the MPL-2.0 license text is included in this distribution (licenses/MPL-2.0.txt).
+“LibreOffice” and “The Document Foundation” are trademarks of their respective owners.
+This product is not affiliated with or endorsed by The Document Foundation.

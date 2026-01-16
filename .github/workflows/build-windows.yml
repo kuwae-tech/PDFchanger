@@ -1,0 +1,32 @@
+name: build-windows
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - name: Show Node and npm versions
+        run: |
+          node --version
+          npm --version
+      - name: Prepare npm registry
+        run: |
+          if (Test-Path ".npmrc") { Rename-Item ".npmrc" ".npmrc.ci-bak" }
+          npm config set registry https://registry.npmjs.org/
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Build package
+        run: npm run ci:win
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DocFolderPdfWatcher-win-x64
+          path: dist/*.zip

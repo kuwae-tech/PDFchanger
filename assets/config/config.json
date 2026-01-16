@@ -1,0 +1,17 @@
+{
+  "watchRoot": "./data",
+  "inbox": "inbox",
+  "work": "work",
+  "output": "inbox",
+  "archiveOriginals": "archive/originals",
+  "archiveWork": "archive/work",
+  "archiveWorkFailed": "archive/work_failed",
+  "logs": "logs",
+  "state": "state",
+  "polling": false,
+  "pollingIntervalMs": 1000,
+  "stableCheckIntervalMs": 500,
+  "stableChecks": 6,
+  "stableTimeoutMs": 60000,
+  "jobTimeoutMs": 300000
+}

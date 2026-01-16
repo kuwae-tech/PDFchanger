@@ -1,0 +1,40 @@
+{
+  "name": "doc-folder-pdf-watcher",
+  "version": "0.1.0",
+  "description": "Folder watcher that converts Office documents to PDF using bundled LibreOffice",
+  "private": true,
+  "main": "build/index.js",
+  "bin": "build/index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc -p tsconfig.app.json && tsc -p tsconfig.scripts.json",
+    "ensure:assets": "node build-scripts/ensure_assets.js",
+    "vendor:lo": "npm run ensure:assets && node build-scripts/download_and_extract_libreoffice.js",
+    "pack:exe": "pkg -t node18-win-x64 build/index.js --output dist/DocFolderPdfWatcher.exe",
+    "package:zip": "node build-scripts/package_zip.js",
+    "ci:win": "npm run build && npm run vendor:lo && npm run pack:exe && npm run package:zip"
+  },
+  "dependencies": {
+    "archiver": "^6.0.2",
+    "chokidar": "^3.5.3",
+    "dayjs": "^1.11.10",
+    "fs-extra": "^11.2.0",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.24",
+    "@types/winston": "^2.4.4",
+    "pkg": "^5.8.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "pkg": {
+    "assets": [
+      "dist/config/**/*",
+      "dist/licenses/**/*",
+      "dist/THIRD_PARTY_NOTICES.txt"
+    ]
+  }
+}
