@@ -21,7 +21,6 @@
     "winston": "^3.10.0"
   },
   "devDependencies": {
-    "@types/archiver": "^6.0.2",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.24",
     "@types/winston": "^2.4.4",
