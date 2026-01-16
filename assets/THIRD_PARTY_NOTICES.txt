@@ -1,0 +1,11 @@
+Third-Party Notices
+====================
+
+This product bundles LibreOffice.
+
+LibreOffice is provided by The Document Foundation and is licensed under
+MPL 2.0 (and other compatible licenses). The MPL-2.0 license text is
+included in this distribution.
+
+"LibreOffice" and "The Document Foundation" are trademarks of their
+respective owners. No logos are used.
