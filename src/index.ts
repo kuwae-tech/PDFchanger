@@ -229,12 +229,12 @@ async function runLibreOffice(
       reject(new Error("LibreOffice conversion timed out"));
     }, config.jobTimeoutMs);
 
-    child.on("error", (error) => {
+    child.on("error", (error: Error) => {
       clearTimeout(timeout);
       reject(error);
     });
 
-    child.on("exit", (code) => {
+    child.on("exit", (code: number | null) => {
       clearTimeout(timeout);
       if (code === 0) {
         resolve();
@@ -327,6 +327,10 @@ async function main(): Promise<void> {
           logger.warn("Failed to move original to archive", { filePath, error: String(moveError) });
         }
 
+        if (!workPath || !workFileName) {
+          throw new Error("Work path not initialized");
+        }
+
         outputPdf = await runLibreOffice(
           paths,
           config,
@@ -374,12 +378,12 @@ async function main(): Promise<void> {
     interval: config.pollingIntervalMs
   });
 
-  watcher.on("add", (filePath) => {
+  watcher.on("add", (filePath: string) => {
     queue.push(path.resolve(filePath));
     void processQueue();
   });
 
-  watcher.on("error", (error) => {
+  watcher.on("error", (error: Error) => {
     logger.error("Watcher error", { error: String(error) });
   });
 }
