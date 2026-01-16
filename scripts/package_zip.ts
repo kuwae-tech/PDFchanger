@@ -19,10 +19,10 @@ async function zipDist(): Promise<void> {
     const archive = archiver("zip", { zlib: { level: 9 } });
 
     output.on("close", () => resolve());
-    archive.on("error", (err) => reject(err));
+    archive.on("error", (err: Error) => reject(err));
 
     archive.pipe(output);
-    archive.directory(distDir, false, (entry) => {
+    archive.directory(distDir, false, (entry: { name?: string }) => {
       if (entry.name === path.basename(outputZip)) {
         return false;
       }
