@@ -7,7 +7,7 @@ UIなしで常駐し、指定フォルダに投入された Word/Excel を Libre
 1. GitHub Actions の成果物 zip を展開します。
 2. `DocFolderPdfWatcher.exe` を起動します。
 3. `data/inbox` に Word/Excel ファイルをコピーします (D&D)。
-4. 変換後の PDF は `data/output` に保存されます。
+4. 変換後の PDF は `data/inbox` に保存されます。
 
 ※ 自動起動は実装していません。必要なら `schtasks` を用いてログオン時起動を設定してください。
 
@@ -15,7 +15,7 @@ UIなしで常駐し、指定フォルダに投入された Word/Excel を Libre
 
 - `data/inbox` : 監視フォルダ
 - `data/work` : 変換用コピー置き場
-- `data/output` : PDF 出力
+- `data/output` : （未使用。既定では `data/inbox` に PDF を出力）
 - `data/archive/originals` : 原本アーカイブ
 - `data/archive/work` : 変換成功のコピーアーカイブ
 - `data/archive/work_failed` : 変換失敗のコピーアーカイブ

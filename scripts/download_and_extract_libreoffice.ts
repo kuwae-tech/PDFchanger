@@ -22,6 +22,18 @@ const assetsMplPath = path.join(assetsDir, "licenses", "MPL-2.0.txt");
 const assetsNoticePath = path.join(assetsDir, "licenses", "NOTICE-LibreOffice.txt");
 const assetsThirdPartyPath = path.join(assetsDir, "THIRD_PARTY_NOTICES.txt");
 
+async function ensureDistDataSkeleton(): Promise<void> {
+  const dataDir = path.join(distDir, "data");
+  await fs.ensureDir(path.join(dataDir, "inbox"));
+  await fs.ensureDir(path.join(dataDir, "work"));
+  await fs.ensureDir(path.join(dataDir, "work_out"));
+  await fs.ensureDir(path.join(dataDir, "archive", "originals"));
+  await fs.ensureDir(path.join(dataDir, "archive", "work"));
+  await fs.ensureDir(path.join(dataDir, "archive", "work_failed"));
+  await fs.ensureDir(path.join(dataDir, "logs"));
+  await fs.ensureDir(path.join(dataDir, "state"));
+}
+
 async function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -113,6 +125,7 @@ async function copyStaticAssets(): Promise<void> {
   await fs.copy(assetsMplPath, path.join(distDir, "licenses", "MPL-2.0.txt"));
   await fs.copy(assetsNoticePath, path.join(distDir, "licenses", "NOTICE-LibreOffice.txt"));
   await fs.copy(assetsThirdPartyPath, path.join(distDir, "THIRD_PARTY_NOTICES.txt"));
+  await ensureDistDataSkeleton();
 }
 
 async function main(): Promise<void> {

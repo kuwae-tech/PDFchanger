@@ -39,6 +39,7 @@ interface Paths {
   archiveOriginalsDir: string;
   archiveWorkDir: string;
   archiveWorkFailedDir: string;
+  workOutDir: string;
   logsDir: string;
   stateDir: string;
   stateFile: string;
@@ -51,7 +52,7 @@ const defaultConfig: AppConfig = {
   watchRoot: "./data",
   inbox: "inbox",
   work: "work",
-  output: "output",
+  output: "inbox",
   archiveOriginals: "archive/originals",
   archiveWork: "archive/work",
   archiveWorkFailed: "archive/work_failed",
@@ -92,6 +93,7 @@ function buildPaths(baseDir: string, config: AppConfig): Paths {
   const archiveOriginalsDir = path.join(watchRoot, config.archiveOriginals);
   const archiveWorkDir = path.join(watchRoot, config.archiveWork);
   const archiveWorkFailedDir = path.join(watchRoot, config.archiveWorkFailed);
+  const workOutDir = path.join(watchRoot, "work_out");
   const logsDir = path.join(watchRoot, config.logs);
   const stateDir = path.join(watchRoot, config.state);
   const stateFile = path.join(stateDir, "processed.json");
@@ -105,6 +107,7 @@ function buildPaths(baseDir: string, config: AppConfig): Paths {
     archiveOriginalsDir,
     archiveWorkDir,
     archiveWorkFailedDir,
+    workOutDir,
     logsDir,
     stateDir,
     stateFile,
@@ -121,6 +124,7 @@ async function ensureDirectories(paths: Paths): Promise<void> {
   await fs.ensureDir(paths.archiveOriginalsDir);
   await fs.ensureDir(paths.archiveWorkDir);
   await fs.ensureDir(paths.archiveWorkFailedDir);
+  await fs.ensureDir(paths.workOutDir);
   await fs.ensureDir(paths.logsDir);
   await fs.ensureDir(paths.stateDir);
 }
@@ -331,14 +335,22 @@ async function main(): Promise<void> {
           throw new Error("Work path not initialized");
         }
 
+        const workOutJobDir = path.join(paths.workOutDir, jobId);
+        await fs.ensureDir(workOutJobDir);
+
         outputPdf = await runLibreOffice(
           paths,
           config,
           workPath,
-          paths.outputDir,
+          workOutJobDir,
           uniqueBase,
           logger
         );
+
+        const finalPdfPath = path.join(paths.outputDir, `${uniqueBase}.pdf`);
+        await fs.move(outputPdf, finalPdfPath, { overwrite: true });
+        outputPdf = finalPdfPath;
+        await fs.remove(workOutJobDir);
 
         try {
           await fs.move(workPath, path.join(paths.archiveWorkDir, workFileName), { overwrite: false });

@@ -15,7 +15,7 @@ const defaultConfig = {
   watchRoot: "./data",
   inbox: "inbox",
   work: "work",
-  output: "output",
+  output: "inbox",
   archiveOriginals: "archive/originals",
   archiveWork: "archive/work",
   archiveWorkFailed: "archive/work_failed",
